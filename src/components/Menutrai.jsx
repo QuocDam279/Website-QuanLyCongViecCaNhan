@@ -40,7 +40,7 @@ const Menutrai = () => {
           <p className="text-[28px] font-bold mt-10">Quản lý công việc</p>
         </div>
         <div className="p-2 space-y-2 h-[210px]">
-          <p className="cursor-pointer hover:bg-white/80 p-2 rounded hover:text-black flex" onClick={() => navigate('/')}>
+          <p className="cursor-pointer hover:bg-white/80 p-2 rounded hover:text-black flex" onClick={() => navigate('/tongquan')}>
             <HomeIcon className="w-5 h-5 mr-2" />
             Tổng Quan
           </p>
@@ -74,7 +74,7 @@ const Menutrai = () => {
                 <LockClosedIcon className="w-5 h-5 mr-2" />
                 Đổi mật khẩu
               </button>
-              <button className="w-full text-left px-4 py-2 hover:bg-gray-100 cursor-pointer flex">
+              <button className="w-full text-left px-4 py-2 hover:bg-gray-100 cursor-pointer flex" onClick={() => navigate('/')}>
                 <ArrowRightOnRectangleIcon className="w-5 h-5 mr-2" />
                 Đăng xuất
               </button>

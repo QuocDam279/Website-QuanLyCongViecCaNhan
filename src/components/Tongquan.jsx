@@ -1,5 +1,6 @@
 import React from 'react'
 import Lich from './Lich'
+import CountUp from 'react-countup';
 
 const Tongquan = () => {
   return (
@@ -12,14 +13,14 @@ const Tongquan = () => {
             <nav className='w-[200px] h-[80px] bg-red-600/80 flex justify-center items-center rounded-[15px] shadow-lg hover:scale-105 transition-all duration-300 cursor-pointer'>
                 <div className='flex flex-col items-center'>
                     <p className='text-[18px] text-white'>Loại công việc</p>
-                    <p className='text-[28px] font-bold text-white'>4</p>
+                    <p className='text-[28px] font-bold text-white'><CountUp end={4} duration={3} /></p>
                 </div>
             </nav>
 
             <nav className='w-[200px] h-[80px] bg-blue-600/80 flex justify-center items-center rounded-[15px] shadow-lg hover:scale-105 transition-all duration-300 cursor-pointer'>
                 <div className='flex flex-col items-center'>
                     <p className='text-[18px] text-white'>Số lượng công việc</p>
-                    <p className='text-[28px] font-bold text-white'>10</p>
+                    <p className='text-[28px] font-bold text-white'><CountUp end={10} duration={3} /></p>
                 </div>
             </nav>
         </div>

@@ -40,7 +40,7 @@ const Loaicongviec = () => {
 
   return (
     <div className="p-5">
-      <h1 className="text-2xl font-bold mb-4">Loại Công Việc</h1>
+      <h1 className="text-[20px] font-bold mb-4 text-blue-700">LOẠI CÔNG VIỆC</h1>
 
       {/* Form thêm mới */}
       <div className="flex mb-4">
@@ -65,7 +65,7 @@ const Loaicongviec = () => {
         <thead>
           <tr className="bg-gray-200 text-left">
             <th className="border p-2 w-20">STT</th>
-            <th className="border p-2">Tên Công Việc</th>
+            <th className="border p-2">Tên công việc</th>
             <th className="border p-2 w-40">Hành động</th>
           </tr>
         </thead>

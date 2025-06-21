@@ -34,8 +34,8 @@ const Menutrai = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-100 pr-2 w-[100%]" >
-      <div className="bg-blue-500 rounded-lg shadow-md w-[100%] text-white h-screen">
+    <div className="min-h-screen bg-gray-100 pr-2 w-[100%]">
+      <div className="bg-blue-500 shadow-md w-[100%] text-white h-screen">
         <div className="h-[120px] bg-blue-600 flex justify-center">
           <p className="text-[28px] font-bold mt-10">Quản lý công việc</p>
         </div>

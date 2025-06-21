@@ -60,58 +60,54 @@ const Loaicongviec = () => {
         </button>
       </div>
 
-      {/* Bảng */}
-      <table className="w-full border-collapse border border-gray-300">
-        <thead>
-          <tr className="bg-gray-200 text-left">
-            <th className="border p-2 w-20">STT</th>
-            <th className="border p-2">Tên công việc</th>
-            <th className="border p-2 w-40">Hành động</th>
-          </tr>
-        </thead>
-        <tbody>
-          {tasks.map((task, index) => (
-            <tr key={task.id} className="hover:bg-gray-50">
-              <td className="border p-2">{index + 1}</td>
-              <td className="border p-2">
-                {editingTask?.id === task.id ? (
-                  <input 
-                    type="text" 
-                    className="border p-1 rounded w-full"
-                    value={editedName}
-                    onChange={(e) => setEditedName(e.target.value)}
-                  />
-                ) : (
-                  task.name
-                )}
-              </td>
-              <td className="border p-2 flex gap-2">
-                {editingTask?.id === task.id ? (
-                  <button 
-                    onClick={handleSaveEdit}
-                    className="bg-green-500 text-white px-2 py-1 rounded text-sm"
-                  >
-                    Lưu
-                  </button>
-                ) : (
-                  <button 
-                    onClick={() => handleEditTask(task)}
-                    className="bg-yellow-400 text-white p-1 rounded"
-                  >
-                    <PencilIcon className="w-5 h-5" />
-                  </button>
-                )}
-                <button 
-                  onClick={() => handleDeleteTask(task.id)}
-                  className="bg-red-500 text-white p-1 rounded"
+      {/* Danh sách kiểu Badge / Tag */}
+      <div className="flex flex-wrap gap-3">
+        {tasks.map((task) => (
+          <div
+            key={task.id}
+            className="relative flex items-center justify-center rounded-full bg-gray-100 text-gray-800 font-bold px-4 py-2 hover:shadow-lg hover:bg-gray-200 group"
+          >
+            {editingTask?.id === task.id ? (
+              <input
+                type="text"
+                className="border rounded-full px-3 py-1 focus:outline-none"
+                value={editedName}
+                onChange={(e) => setEditedName(e.target.value)}
+              />
+            ) : (
+              <span>{task.name}</span>
+            )}
+            <div className="absolute right-2 top-1 flex space-x-1 opacity-0 group-hover:opacity-100">
+              {editingTask?.id === task.id ? (
+                <button
+                  onClick={handleSaveEdit}
+                  className="bg-green-500 text-white p-1 rounded-full"
+                  title="Lưu"
                 >
-                  <TrashIcon className="w-5 h-5" />
+                  ✅
                 </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+              ) : (
+                <>
+                  <button
+                    onClick={() => handleEditTask(task)}
+                    className="bg-yellow-400 text-white p-1 rounded-full"
+                    title="Sửa"
+                  >
+                    <PencilIcon className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={() => handleDeleteTask(task.id)}
+                    className="bg-red-500 text-white p-1 rounded-full"
+                    title="Xóa"
+                  >
+                    <TrashIcon className="w-4 h-4" />
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   )
 }

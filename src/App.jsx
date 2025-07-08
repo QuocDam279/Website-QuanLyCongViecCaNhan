@@ -15,7 +15,6 @@ function App() {
         <Route path='/tongquan' element={<Ptongquan />} />
         <Route path='/loaicongviec' element={<PLoaicongviec />}/>   
         <Route path='/dangky' element={<PDangky />}/>    
- 
       </Routes>
   )
 }

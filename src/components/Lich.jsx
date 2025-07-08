@@ -43,7 +43,7 @@ const Lich = () => {
 
   return (
     <div
-      className="p-4 rounded border relative"
+      className="h-full p-4 rounded border relative overflow-auto"
       style={{
         backgroundImage: `url(${images[bgIndex]})`,
         backgroundSize: 'cover',

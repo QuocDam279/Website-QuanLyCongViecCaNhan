@@ -36,28 +36,28 @@ const Menutrai = () => {
   return (
     <div className="min-h-screen bg-gray-100 pr-2 w-[100%]">
       <div className="bg-blue-500 shadow-md w-[100%] text-white h-screen">
-        <div className="h-[120px] bg-blue-600 flex justify-center">
-          <p className="text-[28px] font-bold mt-10">Quản lý công việc</p>
+        <div className="h-28 bg-blue-600 flex justify-center items-center">
+          <p className="text-xl sm:text-3xl font-bold">Quản lý công việc</p>
         </div>
-        <div className="p-2 space-y-2 h-[210px]">
-          <p className="cursor-pointer hover:bg-white/80 p-2 rounded hover:text-black flex" onClick={() => navigate('/tongquan')}>
+        <div className="p-2 space-y-2 h-fit max-h-[70vh] overflow-auto">
+          <p className="cursor-pointer hover:bg-white/80 p-2 rounded hover:text-black flex items-center" onClick={() => navigate('/tongquan')}>
             <HomeIcon className="w-5 h-5 mr-2" />
             Tổng Quan
           </p>
-          <p className="cursor-pointer hover:bg-white/80 p-2 rounded hover:text-black flex"  onClick={() => navigate('/loaicongviec')}>
+          <p className="cursor-pointer hover:bg-white/80 p-2 rounded hover:text-black flex items-center" onClick={() => navigate('/loaicongviec')}>
             <TagIcon className="w-5 h-5 mr-2" />
             Loại Công Việc
           </p>
-          <p className="cursor-pointer hover:bg-white/80 p-2 rounded hover:text-black flex">
+          <p className="cursor-pointer hover:bg-white/80 p-2 rounded hover:text-black flex items-center">
             <ClipboardDocumentIcon className="w-5 h-5 mr-2" />
             Công Việc
           </p>
-          <p className="cursor-pointer hover:bg-white/80 p-2 rounded hover:text-black flex">
+          <p className="cursor-pointer hover:bg-white/80 p-2 rounded hover:text-black flex items-center">
             <ChartBarIcon className="w-5 h-5 mr-2" />
             Tiến Độ Công Việc
           </p>
-          
         </div>
+
         <div className="relative p-2" ref={menuRef}>
           <hr className="border-t-2 border-gray-300/60 my-2" />
           <button

@@ -39,8 +39,11 @@ const Loaicongviec = () => {
   }
 
   return (
-    <div className="p-5">
-      <h1 className="text-[20px] font-bold mb-4 text-blue-700">LOẠI CÔNG VIỆC</h1>
+    <div className="">
+      <div className="text-xl sm:text-2xl ml-2 mt-2 font-bold text-blue-700">
+            LOẠI CÔNG VIỆC
+      </div>
+      <hr className="border-t-2 border-gray-300/30 my-4 mx-4" />
 
       {/* Form thêm mới */}
       <div className="flex mb-4">

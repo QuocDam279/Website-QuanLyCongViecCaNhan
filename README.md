@@ -11,7 +11,7 @@ Giúp người dùng quản lý công việc cá nhân hàng ngày (tạo task, 
 - Database: MongoDB
 - Triển khai: Docker
 
-## 📦 Cách chạy dự án
+## Cách chạy dự án
 ```bash
 git clone https://github.com/QuocDam279/Website-QuanLyCongViecCaNhan.git
 cd [folder]

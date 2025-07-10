@@ -39,7 +39,7 @@ const Loaicongviec = () => {
   }
 
   return (
-    <div className="">
+    <div className="p-4">
       <div className="text-xl sm:text-2xl ml-2 mt-2 font-bold text-blue-700">
             LOẠI CÔNG VIỆC
       </div>

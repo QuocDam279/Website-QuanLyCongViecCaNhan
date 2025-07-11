@@ -4,7 +4,6 @@ import PLoaicongviec from './pages/PLoaicongviec'
 import { Routes, Route } from 'react-router-dom'
 import PDangnhap from './pages/PDangnhap'
 import PDangky from './pages/PDangky'
-import './App.css'
 
 
 function App() {

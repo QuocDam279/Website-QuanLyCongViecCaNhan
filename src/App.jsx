@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import Header from './components/Header'
 import Ptongquan from './pages/Ptongquan'
 import PLoaicongviec from './pages/PLoaicongviec'

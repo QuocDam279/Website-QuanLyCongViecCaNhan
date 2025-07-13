@@ -4,6 +4,8 @@ import PLoaicongviec from './pages/PLoaicongviec'
 import { Routes, Route } from 'react-router-dom'
 import PDangnhap from './pages/PDangnhap'
 import PDangky from './pages/PDangky'
+import PCongviec from './pages/PCongviec'
+
 
 
 function App() {
@@ -12,7 +14,9 @@ function App() {
         <Route path='/' element={<PDangnhap />} />
         <Route path='/tongquan' element={<Ptongquan />} />
         <Route path='/loaicongviec' element={<PLoaicongviec />}/>   
+        <Route path='/congviec' element={<PCongviec />}/>   
         <Route path='/dangky' element={<PDangky />}/>    
+        
       </Routes>
   )
 }

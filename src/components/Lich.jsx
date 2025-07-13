@@ -57,7 +57,7 @@ const Lich = () => {
         >
           ←
         </button>
-        <div className='bg-teal-500 w-[200px] h-[35px] items-center flex justify-center'>
+        <div className='bg-teal-500 w-full h-[35px] items-center flex justify-center'>
           <div className="text-xl font-bold text-white">
             {months[currentMonth]} - {currentYear}
           </div>

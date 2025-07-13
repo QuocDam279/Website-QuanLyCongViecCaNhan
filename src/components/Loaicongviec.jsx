@@ -1,10 +1,14 @@
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { PencilIcon, TrashIcon, PlusIcon } from '@heroicons/react/24/solid'
 
+
 const Loaicongviec = () => {
+  const navigate = useNavigate()
+
   const [tasks, setTasks] = useState([
-    { id: 1, name: 'Thiết kế giao diện' },
-    { id: 2, name: 'Phân tích yêu cầu' },
+    { id: 1, name: 'Thiết kế' },
+    { id: 2, name: 'Phân tích' },
   ])
 
   const [newTaskName, setNewTaskName] = useState('')
@@ -39,8 +43,8 @@ const Loaicongviec = () => {
   }
 
   return (
-    <div className="">
-      <div className="text-xl sm:text-2xl ml-2 mt-2 font-bold text-blue-700">
+    <div className="p-4">
+      <div className="text-xl ml-2 mt-2 font-bold text-blue-700">
             LOẠI CÔNG VIỆC
       </div>
       <hr className="border-t-2 border-gray-300/30 my-4 mx-4" />
@@ -78,7 +82,12 @@ const Loaicongviec = () => {
                 onChange={(e) => setEditedName(e.target.value)}
               />
             ) : (
-              <span>{task.name}</span>
+              <span 
+                onClick={() => navigate(`/congviec?category=${encodeURIComponent(task.name)}`)}
+                className="cursor-pointer hover:underline"
+              >
+                {task.name}
+              </span>
             )}
             <div className="absolute right-2 top-1 flex space-x-1 opacity-0 group-hover:opacity-100">
               {editingTask?.id === task.id ? (

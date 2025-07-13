@@ -48,13 +48,25 @@ const Menutrai = () => {
             <TagIcon className="w-5 h-5 mr-2" />
             Loại Công Việc
           </p>
-          <p className="cursor-pointer hover:bg-white/80 p-2 rounded hover:text-black flex items-center">
+          <p className="cursor-pointer hover:bg-white/80 p-2 rounded hover:text-black flex items-center" onClick={() => navigate('/congviec')}>
             <ClipboardDocumentIcon className="w-5 h-5 mr-2" />
             Công Việc
           </p>
           <p className="cursor-pointer hover:bg-white/80 p-2 rounded hover:text-black flex items-center">
             <ChartBarIcon className="w-5 h-5 mr-2" />
-            Tiến Độ Công Việc
+            Lưu trữ
+          </p>
+          <p className="cursor-pointer hover:bg-white/80 p-2 rounded hover:text-black flex items-center">
+            <ChartBarIcon className="w-5 h-5 mr-2" />
+            Nhật ký
+          </p>
+          <p className="cursor-pointer hover:bg-white/80 p-2 rounded hover:text-black flex items-center">
+            <ChartBarIcon className="w-5 h-5 mr-2" />
+            Ghi chú
+          </p>
+          <p className="cursor-pointer hover:bg-white/80 p-2 rounded hover:text-black flex items-center">
+            <ChartBarIcon className="w-5 h-5 mr-2" />
+            Thông báo
           </p>
         </div>
 
@@ -66,7 +78,7 @@ const Menutrai = () => {
           >
             <UserIcon className="w-5 h-5 mr-2" />
             Tài Khoản
-            <ChevronDownIcon className="w-5 h-5 mr-2 mt-1" />
+            <ChevronDownIcon className="w-5 h-5 ml-1 mt-1" />
           </button>
           {isOpen && (
             <div className="absolute w-auto mt-2 bg-white border rounded shadow-lg text-black">

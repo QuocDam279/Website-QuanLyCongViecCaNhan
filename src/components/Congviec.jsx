@@ -2,6 +2,16 @@ import React, { useState, useEffect, useRef } from 'react'
 import { PencilIcon, TrashIcon, PlusIcon } from '@heroicons/react/24/solid'
 import { useSearchParams } from 'react-router-dom'
 
+const initialTaskState = {
+    name: '',
+    startDate: '',
+    endDate: '',
+    description: '',
+    status: 'Chưa thực hiện',
+    category: '',
+    file: null,
+  }
+
 const CongViec = () => {
   const [searchParams] = useSearchParams()
   const selectedCategory = searchParams.get('category')
@@ -23,16 +33,6 @@ const CongViec = () => {
       file: null
     },
   ])
-
-  const initialTaskState = {
-    name: '',
-    startDate: '',
-    endDate: '',
-    description: '',
-    status: 'Chưa thực hiện',
-    category: '',
-    file: null,
-  }
 
   const [currentTask, setCurrentTask] = useState(initialTaskState)
   const [editingTask, setEditingTask] = useState(null)

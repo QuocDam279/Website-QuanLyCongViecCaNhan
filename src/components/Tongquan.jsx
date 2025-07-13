@@ -7,14 +7,14 @@ const Tongquan = () => {
     <div className="flex flex-col h-screen">
       {/* Phần thống kê trên */}
       <div className="p-4">
-        <div className="text-xl sm:text-2xl ml-2 mt-2 font-bold text-blue-700">
+        <div className="text-xl ml-2 mt-2 font-bold text-blue-700">
           TỔNG QUAN
         </div>
         <hr className="border-t-2 border-gray-300/30 my-4 mx-4" />
 
         <div className="flex flex-wrap justify-center gap-4 sm:gap-6 items-center">
           {/* Card 1 */}
-          <nav className="w-40 sm:w-48 h-20 bg-red-600/80 flex justify-center items-center rounded-xl shadow-lg hover:scale-105 transition-all duration-300 cursor-pointer">
+          <nav className="w-36 sm:w-44 h-18 bg-red-600/80 flex justify-center items-center rounded-xl shadow-lg hover:scale-105 transition-all duration-300 cursor-pointer">
             <div className="flex flex-col items-center">
               <p className="text-sm sm:text-base text-white">Loại công việc</p>
               <p className="text-xl sm:text-2xl font-bold text-white">
@@ -24,7 +24,7 @@ const Tongquan = () => {
           </nav>
 
           {/* Card 2 */}
-          <nav className="w-40 sm:w-48 h-20 bg-blue-600/80 flex justify-center items-center rounded-xl shadow-lg hover:scale-105 transition-all duration-300 cursor-pointer">
+          <nav className="w-36 sm:w-44 h-18 bg-blue-600/80 flex justify-center items-center rounded-xl shadow-lg hover:scale-105 transition-all duration-300 cursor-pointer">
             <div className="flex flex-col items-center">
               <p className="text-sm sm:text-base text-white">Số lượng công việc</p>
               <p className="text-xl sm:text-2xl font-bold text-white">

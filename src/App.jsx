@@ -6,8 +6,6 @@ import PDangnhap from './pages/PDangnhap'
 import PDangky from './pages/PDangky'
 import PCongviec from './pages/PCongviec'
 
-
-
 function App() {
   return (
       <Routes>

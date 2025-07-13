@@ -62,7 +62,7 @@ const Menutrai = () => {
           </p>
           <p className="cursor-pointer hover:bg-white/80 p-2 rounded hover:text-black flex items-center">
             <ChartBarIcon className="w-5 h-5 mr-2" />
-            Ghi chú
+            Ghi chú cá nhân
           </p>
           <p className="cursor-pointer hover:bg-white/80 p-2 rounded hover:text-black flex items-center">
             <ChartBarIcon className="w-5 h-5 mr-2" />

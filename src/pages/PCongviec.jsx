@@ -6,7 +6,7 @@ import Congviec from '../components/Congviec'
 const PCongviec = () => {
   return (
     <div className='flex flex-col-2'>
-        <div className='w-[20.2%] fixed'>
+        <div className='w-[20%] fixed'>
             <Menutrai />
         </div>
         <div className='w-[79.5%] ml-[20%]'>

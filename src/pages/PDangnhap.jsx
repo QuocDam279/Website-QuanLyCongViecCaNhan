@@ -1,26 +1,26 @@
 import React, { useState } from 'react'
-import logo from '../assets/logol2d.png'
+import logo from '../assets/l2dd2.jpg'
 import { useNavigate } from 'react-router-dom'
 
 const PDangnhap = () => {
-  const [username, setUsername] = useState('')
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const navigate = useNavigate()
 
   const handleLogin = (e) => {
-    e.preventDefault() // chặn reload
+    e.preventDefault()
 
-    if (!username || !password) {
-      alert('Vui lòng nhập đầy đủ tài khoản và mật khẩu')
+    if (!email || !password) {
+      alert('Vui lòng nhập đầy đủ email và mật khẩu')
       return
     }
 
-    // Test tạm
-    if (username === 'admin' && password === '123456') {
+    // Kiểm tra tài khoản (demo)
+    if (email === 'quocdam@gmail.com' && password === '123456') {
       alert('Đăng nhập thành công!')
       navigate('/tongquan')
     } else {
-      alert('Sai tài khoản hoặc mật khẩu')
+      alert('Sai email hoặc mật khẩu')
     }
   }
 
@@ -40,11 +40,11 @@ const PDangnhap = () => {
         {/* Form */}
         <form onSubmit={handleLogin} className="w-full flex flex-col items-center">
           <input 
-            type="text"
-            placeholder="Tài khoản"
+            type="email"
+            placeholder="Email"
             className="border border-gray-400 rounded px-3 py-2 w-full mb-3"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
           <input 
             type="password"
@@ -70,7 +70,7 @@ const PDangnhap = () => {
           >
             Tạo tài khoản
           </button>
-          <a href="#" className="text-sm text-black">Quên mật khẩu ?</a>
+          <a href="#" className="text-sm text-black">Quên mật khẩu?</a>
         </div>
 
       </div>

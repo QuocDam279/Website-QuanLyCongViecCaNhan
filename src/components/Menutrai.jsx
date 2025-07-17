@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
+import logo from '../assets/l2dd2.jpg'
 
 import { 
   HomeIcon, 
@@ -11,7 +12,8 @@ import {
   LockClosedIcon, 
   ArrowRightOnRectangleIcon, 
   ChevronDownIcon,
-  TagIcon
+  TagIcon,
+  ClockIcon
 } from '@heroicons/react/24/solid';
 
 
@@ -35,9 +37,13 @@ const Menutrai = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 pr-2 w-[100%]">
-      <div className="bg-blue-500 shadow-md w-[100%] text-white h-screen">
-        <div className="h-28 bg-blue-600 flex justify-center items-center">
-          <p className="text-xl sm:text-3xl font-bold">Quản lý công việc</p>
+      <div className="bg-gradient-to-br from-blue-950 to-blue-700  shadow-md w-[100%] text-white h-screen">
+        <div className="">
+              <img 
+                src={logo}
+                alt="Logo"
+                className="w-full h-full object-cover"
+              />
         </div>
         <div className="p-2 space-y-2 h-fit max-h-[70vh] overflow-auto">
           <p className="cursor-pointer hover:bg-white/80 p-2 rounded hover:text-black flex items-center" onClick={() => navigate('/tongquan')}>
@@ -53,21 +59,10 @@ const Menutrai = () => {
             Công Việc
           </p>
           <p className="cursor-pointer hover:bg-white/80 p-2 rounded hover:text-black flex items-center">
-            <ChartBarIcon className="w-5 h-5 mr-2" />
-            Lưu trữ
+            <ClockIcon className="w-5 h-5 mr-2" />
+            Lịch sử thay đổi
           </p>
-          <p className="cursor-pointer hover:bg-white/80 p-2 rounded hover:text-black flex items-center">
-            <ChartBarIcon className="w-5 h-5 mr-2" />
-            Nhật ký
-          </p>
-          <p className="cursor-pointer hover:bg-white/80 p-2 rounded hover:text-black flex items-center">
-            <ChartBarIcon className="w-5 h-5 mr-2" />
-            Ghi chú
-          </p>
-          <p className="cursor-pointer hover:bg-white/80 p-2 rounded hover:text-black flex items-center">
-            <ChartBarIcon className="w-5 h-5 mr-2" />
-            Thông báo
-          </p>
+
         </div>
 
         <div className="relative p-2" ref={menuRef}>

@@ -35,6 +35,8 @@ const Trangthai = () => {
   }, []);
 
   useEffect(() => {
+    const chartElement = chartRef.current;
+
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting) {
@@ -44,13 +46,13 @@ const Trangthai = () => {
       { threshold: 0.4 }
     );
 
-    if (chartRef.current) {
-      observer.observe(chartRef.current);
+    if (chartElement) {
+      observer.observe(chartElement);
     }
 
     return () => {
-      if (chartRef.current) {
-        observer.unobserve(chartRef.current);
+      if (chartElement) {
+        observer.unobserve(chartElement);
       }
     };
   }, []);

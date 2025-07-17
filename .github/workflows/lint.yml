@@ -19,9 +19,10 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install dependencies
+      - name: Install dependencies (in frontend)
         run: npm ci
+        working-directory: ./frontend
 
-      - name: Run ESLint (v9 with eslint.config.js)
-        run: |
-          npx eslint . --ext .js,.jsx,.ts,.tsx --max-warnings=0
+      - name: Run ESLint (in frontend)
+        run: npx eslint . --ext .js,.jsx,.ts,.tsx --max-warnings=0
+        working-directory: ./frontend

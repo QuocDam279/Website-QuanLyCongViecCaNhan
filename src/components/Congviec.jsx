@@ -32,6 +32,26 @@ const CongViec = () => {
       category: 'Thiết kế',
       file: null
     },
+     {
+      id: 2,
+      name: 'Thiết kế trang loại công việc',
+      startDate: '2025-07-10',
+      endDate: '2025-07-12',
+      description: 'Thiết kế giao diện trang tổng quan',
+      status: 'Đã hoàn thành',
+      category: 'Thiết kế',
+      file: null
+    },
+    {
+      id: 3,
+      name: 'Xây dựng trang đăng ký, đăng nhập website quản lý công việc',
+      startDate: '2025-07-10',
+      endDate: '2025-07-13',
+      description: 'Thiết kế giao diện trang tổng quan',
+      status: 'Đang thực hiện',
+      category: 'Thiết kế',
+      file: null
+    },
   ])
 
   const [currentTask, setCurrentTask] = useState(initialTaskState)

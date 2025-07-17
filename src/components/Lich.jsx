@@ -1,18 +1,22 @@
-import React, { useState } from 'react';
-import caycodon from '../assets/caycodon.jpg';
-import gaumeo from '../assets/gaumeo.jpg';
-import wd from '../assets/window.jpg';
+import React, { useState, useEffect } from 'react';
 
 const Lich = () => {
   const today = new Date();
+
   const [currentMonth, setCurrentMonth] = useState(today.getMonth());
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
-  const images = [caycodon, gaumeo, wd];
-  const [bgIndex, setBgIndex] = useState(0);
 
-  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-  const firstDayOfWeek = new Date(currentYear, currentMonth, 1).getDay();
-  const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
+  const COLORS = {
+    'Chưa thực hiện': '#FF9800',
+    'Đang thực hiện': '#2196F3',
+    'Hoàn thành': '#E91E63'
+  };
+
+  const months = [
+    'Tháng 1','Tháng 2','Tháng 3','Tháng 4','Tháng 5','Tháng 6',
+    'Tháng 7','Tháng 8','Tháng 9','Tháng 10','Tháng 11','Tháng 12'
+  ];
+  const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
   const handlePrevMonth = () => {
     if (currentMonth === 0) {
@@ -31,77 +35,105 @@ const Lich = () => {
       setCurrentMonth(currentMonth + 1);
     }
   };
-  
-  const handleChangeBackground = () => {
-    setBgIndex((prev) => (prev + 1) % images.length);
+
+  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+  const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+  const days = [];
+
+  let week = [];
+  for (let i = 0; i < (firstDay === 0 ? 6 : firstDay - 1); i++) week.push(null);
+  for (let i = 1; i <= daysInMonth; i++) {
+    week.push(i);
+    if (week.length === 7) {
+      days.push(week);
+      week = [];
+    }
+  }
+  if (week.length) {
+    while (week.length < 7) week.push(null);
+    days.push(week);
+  }
+
+  const [tasks, setTasks] = useState([
+    {
+      id: 1,
+      name: 'Thiết kế Dashboard',
+      startDate: '2025-07-30',
+      endDate: '2025-08-05',
+      description: 'Thiết kế giao diện trang tổng quan',
+      status: 'Chưa thực hiện',
+      category: 'Thiết kế',
+      file: null
+    },
+    {
+      id: 2,
+      name: 'API Backend',
+      startDate: '2025-07-10',
+      endDate: '2025-07-12',
+      description: 'Xây dựng API cho Dashboard',
+      status: 'Đang thực hiện',
+      category: 'Lập trình',
+      file: null
+    },
+    {
+      id: 3,
+      name: 'Viết tài liệu',
+      startDate: '2025-07-10',
+      endDate: '2025-07-10',
+      description: 'Hoàn thiện tài liệu kỹ thuật',
+      status: 'Hoàn thành',
+      category: 'Tài liệu',
+      file: null
+    },
+  ]);
+
+  // Lọc task theo ngày
+  const getTasksForDay = (day) => {
+    if (!day) return [];
+    const dayStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    return tasks.filter(task =>
+      new Date(task.startDate) <= new Date(dayStr) && new Date(task.endDate) >= new Date(dayStr)
+    );
   };
-  
-  const months = [
-    'Tháng 1','Tháng 2','Tháng 3','Tháng 4','Tháng 5','Tháng 6',
-    'Tháng 7','Tháng 8','Tháng 9','Tháng 10','Tháng 11','Tháng 12'
-  ];
-
+ 
   return (
-    <div
-      className="h-full p-4 rounded border relative overflow-auto"
-      style={{
-        backgroundImage: `url(${images[bgIndex]})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-      }}
-    >
+    <div className="p-4">
       <div className="flex justify-between items-center mb-4">
-        <button 
-          onClick={handlePrevMonth}
-          className="px-2 py-1 bg-gray-200 rounded cursor-pointer"
-        >
-          ←
-        </button>
-        <div className='bg-teal-500 w-full h-[35px] items-center flex justify-center'>
-          <div className="text-xl font-bold text-white">
-            {months[currentMonth]} - {currentYear}
-          </div>
-        </div>
-        <button 
-          onClick={handleNextMonth}
-          className="px-2 py-1 bg-gray-200 rounded cursor-pointer"
-        >
-          →
-        </button>
+        <button onClick={handlePrevMonth} className="px-2 py-1 bg-gray-200 rounded">←</button>
+        <div className="text-xl font-bold">{months[currentMonth]} - {currentYear}</div>
+        <button onClick={handleNextMonth} className="px-2 py-1 bg-gray-200 rounded">→</button>
       </div>
-      <div className="mb-3 flex justify-center">
-        <button
-          onClick={handleChangeBackground}
-          className="bg-blue-600 text-white rounded px-3 py-1 hover:bg-blue-700"
-        >
-          Đổi hình nền
-        </button>
-      </div>
-      <div className="grid grid-cols-7 gap-2 text-center text-blue-950 ">
-        {['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'].map((day) => (
-          <div className='bg-amber-300 h-[35px] items-center'>
-              <div key={day} className="font-semibold text-blue-950 mt-1">{day}</div>
-          </div>
+
+      <div className="grid grid-cols-7 border border-gray-400">
+        {daysOfWeek.map((day) => (
+          <div key={day} className="p-2 text-center font-semibold bg-gray-200">{day}</div>
         ))}
 
-        {Array.from({ length: firstDayOfWeek }).map((_, i) => (
-          <div key={'empty-' + i}></div>
-        ))}
+        {days.map((week, wi) => (
+          <React.Fragment key={wi}>
+            {week.map((day, di) => (
+              <div key={di} className="border border-gray-400 h-[80px] p-1 relative text-sm flex flex-col gap-0.5">
+                {day && <div className="text-center text-xs font-medium">{day}</div>}
 
-        {days.map((day) => (
-          <div
-            key={day}
-            className="border rounded h-[50px] flex items-center justify-center hover:bg-blue-100 cursor-pointer"
-            style={{
-              backgroundColor: 'rgba(255, 255, 255, 0.8)',
-              backdropFilter: 'blur(2px)',
-            }}
-          >
-            {day}
-          </div>
+                {/* Hiện task trong từng ô */}
+                <div className="flex flex-col gap-0.5 mt-1 overflow-hidden">
+                  {getTasksForDay(day).map((task) => (
+                    <div
+                      key={task.id}
+                      className="text-[10px] text-white px-1 rounded truncate"
+                      style={{ backgroundColor: COLORS[task.status] }}
+                    >
+                      {task.name}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </React.Fragment>
         ))}
       </div>
     </div>
   );
 };
+
 export default Lich;

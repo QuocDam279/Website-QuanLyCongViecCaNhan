@@ -9,13 +9,13 @@ const app = express();
 dotenv.config();
 connectDB();
 
-// ✅ Dòng này phải ĐƯA LÊN TRƯỚC TẤT CẢ ROUTES
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.use('/api/auth', authRoutes);
 app.use('/api/typejob', typejobRoutes);
-app.use('/api/job', jobRoutes); // CHỈ CẦN require 1 lần là đủ
+app.use('/api/job', jobRoutes); 
 
 app.use('/uploads', express.static('uploads'));
 app.use('/api', jobRoutes);

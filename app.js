@@ -9,10 +9,15 @@ const app = express();
 dotenv.config();
 connectDB();
 
+// ✅ Dòng này phải ĐƯA LÊN TRƯỚC TẤT CẢ ROUTES
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+
 app.use('/api/auth', authRoutes);
 app.use('/api/typejob', typejobRoutes);
-app.use('/api/job', jobRoutes);
+app.use('/api/job', jobRoutes); // CHỈ CẦN require 1 lần là đủ
 
+app.use('/uploads', express.static('uploads'));
+app.use('/api', jobRoutes);
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

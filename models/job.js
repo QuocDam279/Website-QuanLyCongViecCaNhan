@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Counter = require('./counter');
 
 const jobSchema = new mongoose.Schema({
-  _id: Number, // ID tự động
+  _id: Number,
   title: { type: String, maxlength: 50, required: true },
   description: { type: String },
   status: {
@@ -10,9 +10,9 @@ const jobSchema = new mongoose.Schema({
     enum: ['todo', 'in_progress', 'done'],
     default: 'todo'
   },
-  typejob: { type: Number, ref: 'Typejob', required: true }, // ID tham chiếu Typejob
+  typejob: { type: Number, ref: 'Typejob', required: true }, 
   due_date: { type: Date },
-  file: { type: String }, // Đường dẫn hoặc tên file đính kèm
+  file: { type: String },
   created_at: { type: Date, default: Date.now }
 });
 
@@ -36,13 +36,11 @@ jobSchema.pre('save', async function (next) {
   next();
 });
 
-// Nếu lưu thành công thì xóa biến rollback
 jobSchema.post('save', function (doc, next) {
   tempCounter = null;
   next();
 });
 
-// Nếu lỗi, rollback lại ID
 jobSchema.post('error', async function (error, doc, next) {
   if (tempCounter !== null) {
     await Counter.findByIdAndUpdate({ _id: 'job' }, { $inc: { seq: -1 } });

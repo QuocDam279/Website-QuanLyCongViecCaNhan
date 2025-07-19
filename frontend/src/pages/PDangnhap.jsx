@@ -1,28 +1,43 @@
-import React, { useState } from 'react'
-import logo from '../assets/l2dd2.jpg'
-import { useNavigate } from 'react-router-dom'
+import React, { useState, useContext } from 'react';
+import logo from '../assets/l2dd2.jpg';
+import { useNavigate } from 'react-router-dom';
+import authApi from '../api/authApi';
+import { UserContext } from '../context/UserContext';
 
 const PDangnhap = () => {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const navigate = useNavigate()
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const navigate = useNavigate();
+  const { setUserName } = useContext(UserContext); // ← Lấy context để set tên
 
-  const handleLogin = (e) => {
-    e.preventDefault()
+  const handleLogin = async (e) => {
+    e.preventDefault();
 
     if (!email || !password) {
-      alert('Vui lòng nhập đầy đủ email và mật khẩu')
-      return
+      alert('Vui lòng nhập đầy đủ email và mật khẩu');
+      return;
     }
 
-    // Kiểm tra tài khoản (demo)
-    if (email === 'quocdam@gmail.com' && password === '123456') {
-      alert('Đăng nhập thành công!')
-      navigate('/tongquan')
-    } else {
-      alert('Sai email hoặc mật khẩu')
+    try {
+      const res = await authApi.login({ email, password });
+
+      // Backend trả về user.name → ta dùng đúng key này
+      const user = res.data.user;
+
+      localStorage.setItem('token', res.data.token);
+      localStorage.setItem('userName', user.name); // ← DÙNG name thay vì fullname
+      setUserName(user.name);                      // ← cập nhật UserContext
+
+      alert('Đăng nhập thành công!');
+      navigate('/tongquan');
+
+      // Nếu cần cập nhật lại toàn bộ layout ngay sau login:
+      // window.location.reload();
+    } catch (err) {
+      console.error('Đăng nhập lỗi:', err);
+      alert('Sai email hoặc mật khẩu hoặc lỗi server');
     }
-  }
+  };
 
   return (
     <div className="flex justify-center items-center h-screen bg-gray-300">
@@ -37,7 +52,7 @@ const PDangnhap = () => {
           />
         </div>
 
-        {/* Form */}
+        {/* Form đăng nhập */}
         <form onSubmit={handleLogin} className="w-full flex flex-col items-center">
           <input 
             type="email"
@@ -62,7 +77,7 @@ const PDangnhap = () => {
           </button>
         </form>
 
-        {/* Các nút khác */}
+        {/* Các nút điều hướng khác */}
         <div className="flex justify-between items-center w-full mt-20">
           <button 
             className="bg-gray-500 text-white px-3 py-1 rounded text-sm cursor-pointer"
@@ -75,7 +90,7 @@ const PDangnhap = () => {
 
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default PDangnhap
+export default PDangnhap;

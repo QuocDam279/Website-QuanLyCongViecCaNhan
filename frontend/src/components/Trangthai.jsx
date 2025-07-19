@@ -1,14 +1,14 @@
 import React, { useEffect, useState, useRef } from "react";
 import { PieChart, Pie, Cell } from "recharts";
+import jobApi from "../api/jobApi";
 import {
   DocumentIcon,
   ArrowPathIcon,
   CheckCircleIcon,
   CircleStackIcon,
   RadioIcon,
-  MinusCircleIcon,
+  MinusCircleIcon, // ← THÊM DÒNG NÀY VÀO
 } from "@heroicons/react/24/solid";
-import { MagnifyingGlassCircleIcon } from "@heroicons/react/20/solid";
 
 const COLORS = ["#FF9800", "#2196F3", "#E91E63"];
 
@@ -20,15 +20,12 @@ const Trangthai = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const data = [
-        { id: 1, title: "Viết báo cáo", status: "To Do" },
-        { id: 2, title: "Fix bug #24", status: "In Progress" },
-        { id: 3, title: "Test tính năng A", status: "Done" },
-        { id: 4, title: "Cập nhật tài liệu", status: "Done" },
-        { id: 5, title: "Code API", status: "To Do" },
-        { id: 6, title: "Tạo giao diện", status: "To Do" },
-      ];
-      setWorkItems(data);
+      try {
+        const res = await jobApi.getAll();
+        setWorkItems(res.data); // Dữ liệu từ backend
+      } catch (err) {
+        console.error("Lỗi khi lấy dữ liệu công việc:", err);
+      }
     };
 
     fetchData();
@@ -46,21 +43,17 @@ const Trangthai = () => {
       { threshold: 0.4 }
     );
 
-    if (chartElement) {
-      observer.observe(chartElement);
-    }
-
+    if (chartElement) observer.observe(chartElement);
     return () => {
-      if (chartElement) {
-        observer.unobserve(chartElement);
-      }
+      if (chartElement) observer.unobserve(chartElement);
     };
   }, []);
 
+  // Tổng số công việc và phân loại theo status
   const total = workItems.length;
-  const toDo = workItems.filter((item) => item.status === "To Do").length;
-  const inProgress = workItems.filter((item) => item.status === "In Progress").length;
-  const done = workItems.filter((item) => item.status === "Done").length;
+  const toDo = workItems.filter((item) => item.status === "todo").length;
+  const inProgress = workItems.filter((item) => item.status === "in_progress").length;
+  const done = workItems.filter((item) => item.status === "done").length;
 
   const chartData = [
     { name: "Chưa thực hiện", value: toDo },

@@ -1,22 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import jobApi from '../api/jobApi';
 
 const Lich = () => {
   const today = new Date();
-
   const [currentMonth, setCurrentMonth] = useState(today.getMonth());
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
-
-  const COLORS = {
-    'Chưa thực hiện': '#FF9800',
-    'Đang thực hiện': '#2196F3',
-    'Hoàn thành': '#E91E63'
-  };
+  const [tasks, setTasks] = useState([]);
 
   const months = [
-    'Tháng 1','Tháng 2','Tháng 3','Tháng 4','Tháng 5','Tháng 6',
-    'Tháng 7','Tháng 8','Tháng 9','Tháng 10','Tháng 11','Tháng 12'
+    'Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6',
+    'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'
   ];
   const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+  useEffect(() => {
+    const fetchTasks = async () => {
+      try {
+        const res = await jobApi.getAll();
+        setTasks(res.data);
+      } catch (error) {
+        console.error('Lỗi khi lấy danh sách công việc:', error.response || error.message);
+      }
+    };
+
+    fetchTasks();
+  }, []);
 
   const handlePrevMonth = () => {
     if (currentMonth === 0) {
@@ -36,6 +44,7 @@ const Lich = () => {
     }
   };
 
+  // Tạo ma trận ngày trong tháng
   const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
   const firstDay = new Date(currentYear, currentMonth, 1).getDay();
   const days = [];
@@ -53,49 +62,34 @@ const Lich = () => {
     while (week.length < 7) week.push(null);
     days.push(week);
   }
-  // eslint-disable-next-line no-unused-vars
-  const [tasks, setTasks] = useState([
-    {
-      id: 1,
-      name: 'Thiết kế Dashboard',
-      startDate: '2025-07-30',
-      endDate: '2025-08-05',
-      description: 'Thiết kế giao diện trang tổng quan',
-      status: 'Chưa thực hiện',
-      category: 'Thiết kế',
-      file: null
-    },
-    {
-      id: 2,
-      name: 'API Backend',
-      startDate: '2025-07-10',
-      endDate: '2025-07-12',
-      description: 'Xây dựng API cho Dashboard',
-      status: 'Đang thực hiện',
-      category: 'Lập trình',
-      file: null
-    },
-    {
-      id: 3,
-      name: 'Viết tài liệu',
-      startDate: '2025-07-10',
-      endDate: '2025-07-10',
-      description: 'Hoàn thiện tài liệu kỹ thuật',
-      status: 'Hoàn thành',
-      category: 'Tài liệu',
-      file: null
-    },
-  ]);
 
-  // Lọc task theo ngày
+  // Map màu theo trạng thái
+  const mapStatusToColor = (statusCode) => {
+    const map = {
+      todo: '#FF9800',
+      in_progress: '#2196F3',
+      done: '#E91E63',
+    };
+    return map[statusCode] || '#9E9E9E';
+  };
+
+  // Lấy các công việc ứng với ngày
   const getTasksForDay = (day) => {
     if (!day) return [];
-    const dayStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-    return tasks.filter(task =>
-      new Date(task.startDate) <= new Date(dayStr) && new Date(task.endDate) >= new Date(dayStr)
-    );
+
+    const currentDate = new Date(currentYear, currentMonth, day);
+    currentDate.setHours(0, 0, 0, 0);
+
+    return tasks.filter(task => {
+      const start = new Date(task.start_date || task.due_date);
+      const end = new Date(task.due_date);
+      start.setHours(0, 0, 0, 0);
+      end.setHours(0, 0, 0, 0);
+
+      return currentDate >= start && currentDate <= end;
+    });
   };
- 
+
   return (
     <div className="p-4">
       <div className="flex justify-between items-center mb-4">
@@ -115,15 +109,15 @@ const Lich = () => {
               <div key={di} className="border border-gray-400 h-[80px] p-1 relative text-sm flex flex-col gap-0.5">
                 {day && <div className="text-center text-xs font-medium">{day}</div>}
 
-                {/* Hiện task trong từng ô */}
                 <div className="flex flex-col gap-0.5 mt-1 overflow-hidden">
                   {getTasksForDay(day).map((task) => (
                     <div
-                      key={task.id}
+                      key={`${task._id}-${day}`}
                       className="text-[10px] text-white px-1 rounded truncate"
-                      style={{ backgroundColor: COLORS[task.status] }}
+                      style={{ backgroundColor: mapStatusToColor(task.status) }}
+                      title={`${task.title} (${task.start_date?.slice(0, 10)} → ${task.due_date?.slice(0, 10)})`}
                     >
-                      {task.name}
+                      {task.title}
                     </div>
                   ))}
                 </div>

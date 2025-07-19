@@ -1,9 +1,9 @@
-import React from 'react'
-import Menutrai from '../components/Menutrai'
-import Tongquan from '../components/Tongquan'
-import Trangthai from '../components/Trangthai'
-import Thongbao from '../components/Thongbao'
-import Lich from '../components/Lich'
+import React from 'react';
+import Menutrai from '../components/Menutrai';
+import Tongquan from '../components/Tongquan';
+import Trangthai from '../components/Trangthai';
+import Thongbao from '../components/Thongbao';
+import Lich from '../components/Lich';
 
 const Ptongquan = () => {
   return (
@@ -18,7 +18,7 @@ const Ptongquan = () => {
         <div className="flex-1 overflow-auto">
           <Lich />
         </div>
-        
+
         <div className="flex gap-4 p-4">
           <div className="w-1/2">
             <Trangthai />
@@ -27,11 +27,11 @@ const Ptongquan = () => {
             <Thongbao />
           </div>
         </div>
-        
+
         <div className="h-15" />
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default Ptongquan;

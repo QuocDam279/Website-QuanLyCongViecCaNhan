@@ -34,6 +34,7 @@ const Loaicongviec = () => {
       setNewTaskName('');
       fetchTasks(); // Load lại danh sách sau khi thêm
     } catch (err) {
+      console.error(err);
       alert('Thêm thất bại!');
     }
   };
@@ -45,6 +46,7 @@ const Loaicongviec = () => {
       await typejobApi.delete(_id);
       fetchTasks(); // Load lại danh sách sau khi xoá
     } catch (err) {
+      console.error(err);
       alert('Xoá thất bại!');
     }
   };
@@ -65,6 +67,7 @@ const Loaicongviec = () => {
       setEditingTask(null);
       setEditedName('');
     } catch (err) {
+      console.error(err);
       alert('Cập nhật thất bại!');
     }
   };

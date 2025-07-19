@@ -121,6 +121,7 @@ const CongViec = () => {
         await jobApi.delete(id);
         setTasks(tasks.filter(t => t._id !== id));
       } catch (err) {
+        console.error(err);
         alert('Xoá thất bại');
       }
     }

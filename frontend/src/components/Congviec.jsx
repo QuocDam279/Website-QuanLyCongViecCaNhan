@@ -1,213 +1,211 @@
-import React, { useState, useEffect, useRef } from 'react'
-import { PencilIcon, TrashIcon, PlusIcon } from '@heroicons/react/24/solid'
-import { useSearchParams } from 'react-router-dom'
+import { useEffect, useRef, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { PencilIcon, TrashIcon, PlusIcon } from '@heroicons/react/24/solid';
+import jobApi from '../api/jobApi';
+import typejobApi from '../api/typejobApi';
 
 const initialTaskState = {
-    name: '',
-    startDate: '',
-    endDate: '',
-    description: '',
-    status: 'Chưa thực hiện',
-    category: '',
-    file: null,
-  }
+  name: '',
+  category: '',
+  startDate: '',
+  endDate: '',
+  status: 'Chưa thực hiện',
+  description: '',
+};
+
+const mapStatus = {
+  'Chưa thực hiện': 'todo',
+  'Đang thực hiện': 'in_progress',
+  'Đã hoàn thành': 'done',
+};
+
+const mapStatusReverse = {
+  'todo': 'Chưa thực hiện',
+  'in_progress': 'Đang thực hiện',
+  'done': 'Đã hoàn thành',
+};
 
 const CongViec = () => {
-  const [searchParams] = useSearchParams()
-  const selectedCategory = searchParams.get('category')
+  const [searchParams] = useSearchParams();
+  const selectedCategory = searchParams.get('category');
 
-  const formRef = useRef(null)
-  const tenCongViecRef = useRef(null)
+  const [tasks, setTasks] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [currentTask, setCurrentTask] = useState(initialTaskState);
+  const [editingTask, setEditingTask] = useState(null);
+  const [filters, setFilters] = useState({ category: '', status: '', date: '' });
 
-  const [categories, setCategories] = useState(['Thiết kế', 'Phân tích', 'Thống kê'])
+  const formRef = useRef(null);
+  const tenCongViecRef = useRef(null);
 
-  const [tasks, setTasks] = useState([
-    {
-      id: 1,
-      name: 'Thiết kế Dashboard',
-      startDate: '2025-07-10',
-      endDate: '2025-07-12',
-      description: 'Thiết kế giao diện trang tổng quan',
-      status: 'Chưa thực hiện',
-      category: 'Thiết kế',
-      file: null
-    },
-     {
-      id: 2,
-      name: 'Thiết kế trang loại công việc',
-      startDate: '2025-07-10',
-      endDate: '2025-07-12',
-      description: 'Thiết kế giao diện trang tổng quan',
-      status: 'Đã hoàn thành',
-      category: 'Thiết kế',
-      file: null
-    },
-    {
-      id: 3,
-      name: 'Xây dựng trang đăng ký, đăng nhập website quản lý công việc',
-      startDate: '2025-07-10',
-      endDate: '2025-07-13',
-      description: 'Thiết kế giao diện trang tổng quan',
-      status: 'Đang thực hiện',
-      category: 'Thiết kế',
-      file: null
-    },
-  ])
+  // Load dữ liệu ban đầu
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [jobRes, categoryRes] = await Promise.all([
+          jobApi.getAll(),
+          typejobApi.getAll(),
+        ]);
+        setTasks(jobRes.data);
+        setCategories(categoryRes.data.data.map(c => c.name));
+      } catch (err) {
+        console.error('Lỗi khi tải dữ liệu:', err);
+      }
+    };
+    fetchData();
+  }, []);
 
-  const [currentTask, setCurrentTask] = useState(initialTaskState)
-  const [editingTask, setEditingTask] = useState(null)
-
-  const [filters, setFilters] = useState({
-    category: '',
-    status: '',
-    date: '', // lọc theo ngày
-  })
-
+  // Áp dụng filter từ URL
   useEffect(() => {
     if (selectedCategory) {
-      setFilters(prev => ({ ...prev, category: selectedCategory }))
+      setFilters(prev => ({ ...prev, category: selectedCategory }));
     }
-  }, [selectedCategory])
+  }, [selectedCategory]);
 
+  // Cập nhật form khi chỉnh sửa
   useEffect(() => {
     if (editingTask) {
-      setCurrentTask(editingTask)
+      setCurrentTask(editingTask);
     } else {
-      setCurrentTask(initialTaskState)
+      setCurrentTask(initialTaskState);
     }
-  }, [editingTask])
+  }, [editingTask]);
 
-  const handleSaveTask = () => {
+  const getTypejobId = async (name) => {
+    const res = await typejobApi.getAll();
+    const match = res.data.data.find(item => item.name === name);
+    return match ? match._id : null;
+  };
+
+  const handleSaveTask = async () => {
     if (!currentTask.name || !currentTask.category || !currentTask.startDate || !currentTask.endDate) {
-      alert('Vui lòng nhập đầy đủ thông tin!')
-      return
+      alert('Vui lòng điền đầy đủ thông tin!');
+      return;
     }
-
     if (new Date(currentTask.endDate) < new Date(currentTask.startDate)) {
-      alert('Ngày kết thúc phải lớn hơn hoặc bằng ngày bắt đầu!')
-      return
+      alert('Ngày kết thúc phải sau hoặc bằng ngày bắt đầu!');
+      return;
     }
 
-    if (editingTask) {
-      setTasks(tasks.map(task => task.id === editingTask.id ? { ...currentTask, id: editingTask.id } : task))
-      setEditingTask(null)
-      alert('Cập nhật công việc thành công!')
-    } else {
-      const newId = tasks.length ? Math.max(...tasks.map(t => t.id)) + 1 : 1
-      setTasks([...tasks, { ...currentTask, id: newId }])
-      alert('Thêm công việc thành công!')
-    }
+    try {
+      const formData = {
+        title: currentTask.name,
+        description: currentTask.description,
+        start_date: currentTask.startDate,
+        due_date: currentTask.endDate,
+        status: mapStatus[currentTask.status] || 'todo',
+        typejob: await getTypejobId(currentTask.category),
+      };
 
-    setCurrentTask(initialTaskState)
-    formRef.current.scrollIntoView({ behavior: 'smooth' })
-  }
+      if (editingTask) {
+        await jobApi.update(editingTask._id, formData);
+        alert('Cập nhật công việc thành công!');
+      } else {
+        await jobApi.create(formData);
+        alert('Thêm công việc thành công!');
+      }
 
-  const handleDeleteTask = (id) => {
-    const confirmDelete = window.confirm('Bạn có chắc chắn muốn xóa công việc này không?')
-    if (confirmDelete) {
-      setTasks(tasks.filter(task => task.id !== id))
+      const jobRes = await jobApi.getAll();
+      setTasks(jobRes.data);
+      setEditingTask(null);
+      setCurrentTask(initialTaskState);
+    } catch (err) {
+      console.error('Lỗi khi lưu công việc:', err);
+      alert('Đã có lỗi xảy ra.');
     }
-  }
+  };
+
+  const handleDeleteTask = async (id) => {
+    if (window.confirm('Bạn có chắc muốn xoá công việc này?')) {
+      try {
+        await jobApi.delete(id);
+        setTasks(tasks.filter(t => t._id !== id));
+      } catch (err) {
+        alert('Xoá thất bại');
+      }
+    }
+  };
 
   const filteredTasks = tasks.filter(task => {
-    const matchCategory = filters.category ? task.category === filters.category : true
-    const matchStatus = filters.status ? task.status === filters.status : true
-
-    const matchDate = filters.date
-      ? new Date(task.startDate) <= new Date(filters.date) &&
-        new Date(task.endDate) >= new Date(filters.date)
-      : true
-
-    return matchCategory && matchStatus && matchDate
-  })
+    const matchCategory = filters.category ? task.typejob?.name === filters.category : true;
+    const matchStatus = filters.status ? task.status === mapStatus[filters.status] : true;
+    const matchDate = filters.date ? new Date(task.due_date) >= new Date(filters.date) : true;
+    return matchCategory && matchStatus && matchDate;
+  });
 
   return (
     <div className="p-4">
-      <div className="text-xl ml-2 mt-2 font-bold text-blue-700">CÔNG VIỆC</div>
-      <hr className="border-t-2 border-gray-300/30 my-4" />
+      <h1 className="text-2xl font-bold text-blue-700 mb-4">CÔNG VIỆC</h1>
 
-      {/* Form thêm/sửa */}
+      {/* Form tạo/sửa */}
       <div className="bg-white border rounded-xl p-6 shadow-lg mb-8" ref={formRef}>
-        <h2 className="text-xl font-semibold text-blue-600 mb-4 flex justify-center">
+        <h2 className="text-xl font-semibold text-blue-600 mb-4 text-center">
           {editingTask ? 'Chỉnh sửa công việc' : 'Thêm công việc mới'}
         </h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Tên công việc */}
+        <div className="grid md:grid-cols-2 gap-4">
           <div>
-            <label className="block mb-1 font-medium text-gray-600">Tên công việc</label>
+            <label className="block text-sm font-medium">Tên công việc</label>
             <input
-              type="text"
-              placeholder="Nhập tên công việc"
-              className="border p-2 rounded w-full"
               ref={tenCongViecRef}
+              type="text"
               value={currentTask.name}
               onChange={(e) => setCurrentTask({ ...currentTask, name: e.target.value })}
+              className="w-full border p-2 rounded"
+              placeholder="Nhập tên công việc"
             />
           </div>
 
-          {/* Loại công việc */}
           <div>
-            <label className="block mb-1 font-medium text-gray-600">Loại công việc</label>
-
-            <div className="relative">
-              <input
-                type="text"
-                list="category-options"
-                placeholder="Nhập hoặc chọn loại công việc"
-                className="border p-2 rounded w-full"
-                value={currentTask.category}
-                onChange={(e) => setCurrentTask({ ...currentTask, category: e.target.value })}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    e.preventDefault()
-                    const newCat = currentTask.category.trim()
-                    if (newCat) {
-                      const exists = categories.some(cat => cat.toLowerCase() === newCat.toLowerCase())
-                      if (!exists) {
-                        setCategories([...categories, newCat])
-                      }
-                    }
+            <label className="block text-sm font-medium">Loại công việc</label>
+            <input
+              type="text"
+              list="category-options"
+              value={currentTask.category}
+              onChange={(e) => setCurrentTask({ ...currentTask, category: e.target.value })}
+              className="w-full border p-2 rounded"
+              placeholder="Chọn hoặc nhập loại công việc"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  const newCat = currentTask.category.trim();
+                  if (newCat && !categories.includes(newCat)) {
+                    setCategories([...categories, newCat]);
                   }
-                }}
-              />
-              <datalist id="category-options">
-                {categories.map((cat, index) => (
-                  <option key={index} value={cat} />
-                ))}
-              </datalist>
-            </div>
+                }
+              }}
+            />
+            <datalist id="category-options">
+              {categories.map((cat, i) => <option key={i} value={cat} />)}
+            </datalist>
           </div>
 
-          {/* Ngày bắt đầu */}
           <div>
-            <label className="block mb-1 font-medium text-gray-600">Ngày bắt đầu</label>
+            <label className="block text-sm font-medium">Ngày bắt đầu</label>
             <input
               type="date"
-              className="border p-2 rounded w-full"
               value={currentTask.startDate}
               onChange={(e) => setCurrentTask({ ...currentTask, startDate: e.target.value })}
+              className="w-full border p-2 rounded"
             />
           </div>
 
-          {/* Ngày kết thúc */}
           <div>
-            <label className="block mb-1 font-medium text-gray-600">Ngày kết thúc</label>
+            <label className="block text-sm font-medium">Ngày kết thúc</label>
             <input
               type="date"
-              className="border p-2 rounded w-full"
               value={currentTask.endDate}
               onChange={(e) => setCurrentTask({ ...currentTask, endDate: e.target.value })}
+              className="w-full border p-2 rounded"
             />
           </div>
 
-          {/* Trạng thái */}
           <div>
-            <label className="block mb-1 font-medium text-gray-600">Trạng thái</label>
+            <label className="block text-sm font-medium">Trạng thái</label>
             <select
-              className="border p-2 rounded w-full"
               value={currentTask.status}
               onChange={(e) => setCurrentTask({ ...currentTask, status: e.target.value })}
+              className="w-full border p-2 rounded"
             >
               <option>Chưa thực hiện</option>
               <option>Đang thực hiện</option>
@@ -215,33 +213,21 @@ const CongViec = () => {
             </select>
           </div>
 
-          {/* File đính kèm */}
-          <div>
-            <label className="block mb-1 font-medium text-gray-600">File đính kèm</label>
-            <input
-              type="file"
-              className="border p-2 rounded w-full"
-              onChange={(e) => setCurrentTask({ ...currentTask, file: e.target.files[0] })}
-            />
-          </div>
-
-          {/* Mô tả */}
           <div className="md:col-span-2">
-            <label className="block mb-1 font-medium text-gray-600">Mô tả</label>
+            <label className="block text-sm font-medium">Mô tả</label>
             <textarea
-              placeholder="Nội dung công việc"
-              className="border p-2 rounded w-full h-[90px]"
               value={currentTask.description}
               onChange={(e) => setCurrentTask({ ...currentTask, description: e.target.value })}
+              className="w-full border p-2 rounded h-[80px]"
+              placeholder="Nhập mô tả"
             />
           </div>
         </div>
 
-        {/* Nút lưu + huỷ */}
-        <div className="flex justify-end mt-6">
+        <div className="flex justify-end mt-6 gap-4">
           <button
             onClick={handleSaveTask}
-            className={`flex items-center ${editingTask ? 'bg-green-500 hover:bg-green-600' : 'bg-blue-500 hover:bg-blue-600'} text-white px-4 py-2 rounded shadow-lg transition`}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded flex items-center"
           >
             <PlusIcon className="w-5 h-5 mr-2" />
             {editingTask ? 'Lưu công việc' : 'Thêm công việc'}
@@ -250,10 +236,10 @@ const CongViec = () => {
           {editingTask && (
             <button
               onClick={() => {
-                setEditingTask(null)
-                setCurrentTask(initialTaskState)
+                setEditingTask(null);
+                setCurrentTask(initialTaskState);
               }}
-              className="ml-4 bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded"
+              className="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded"
             >
               Huỷ
             </button>
@@ -269,8 +255,8 @@ const CongViec = () => {
           className="border p-2 rounded"
         >
           <option value="">-- Lọc theo loại --</option>
-          {categories.map((cat, index) => (
-            <option key={index} value={cat}>{cat}</option>
+          {categories.map((cat, i) => (
+            <option key={i} value={cat}>{cat}</option>
           ))}
         </select>
 
@@ -280,9 +266,9 @@ const CongViec = () => {
           className="border p-2 rounded"
         >
           <option value="">-- Lọc theo trạng thái --</option>
-          <option value="Chưa thực hiện">Chưa thực hiện</option>
-          <option value="Đang thực hiện">Đang thực hiện</option>
-          <option value="Đã hoàn thành">Đã hoàn thành</option>
+          <option>Chưa thực hiện</option>
+          <option>Đang thực hiện</option>
+          <option>Đã hoàn thành</option>
         </select>
 
         <input
@@ -294,47 +280,51 @@ const CongViec = () => {
       </div>
 
       {/* Danh sách công việc */}
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid md:grid-cols-2 gap-4">
         {filteredTasks.length === 0 ? (
-          <div className="text-center text-gray-500 col-span-1 md:col-span-2 py-8">
+          <div className="text-center text-gray-500 col-span-2 py-8">
             Không có công việc nào phù hợp với bộ lọc.
           </div>
         ) : (
           filteredTasks.map(task => (
-            <div key={task.id} className="border rounded-lg p-4 shadow hover:shadow-lg">
-              <h2 className="text-xl font-semibold text-blue-600">{task.name}</h2>
-              <p className="text-gray-600">Loại: {task.category}</p>
-              <p className="text-gray-600">Từ: {task.startDate} - đến: {task.endDate}</p>
+            <div key={task._id} className="border p-4 rounded shadow hover:shadow-lg">
+              <h2 className="text-xl font-semibold text-blue-600">{task.title}</h2>
+              <p className="text-gray-600">Loại: {task.typejob?.name}</p>
+              <p className="text-gray-600">Từ: {task.start_date?.slice(0, 10)} - đến: {task.due_date?.slice(0, 10)}</p>
               <p className="text-gray-600">
                 Trạng thái:
                 <span className={`ml-1 font-semibold ${
-                  task.status === 'Đã hoàn thành' ? 'text-green-600' :
-                  task.status === 'Đang thực hiện' ? 'text-yellow-600' : 'text-red-600'
-                }`}>{task.status}</span>
+                  task.status === 'done' ? 'text-green-600' :
+                  task.status === 'in_progress' ? 'text-yellow-600' :
+                  'text-red-600'
+                }`}>
+                  {mapStatusReverse[task.status]}
+                </span>
               </p>
-              {task.file && (
-                <p className="text-gray-600 mt-2">
-                  File: <span className="underline text-blue-500">{task.file.name}</span>
-                </p>
-              )}
-              <p className="text-gray-700 mt-2">{task.description}</p>
-
-              <div className="flex space-x-2 mt-3">
+              <p className="mt-2 text-gray-700">{task.description}</p>
+              <div className="flex gap-2 mt-3">
                 <button
                   onClick={() => {
-                    setEditingTask(task)
+                    setEditingTask({
+                      _id: task._id,
+                      name: task.title,
+                      category: task.typejob?.name,
+                      startDate: task.start_date?.slice(0, 10),
+                      endDate: task.due_date?.slice(0, 10),
+                      status: mapStatusReverse[task.status],
+                      description: task.description,
+                    });
                     setTimeout(() => {
-                      tenCongViecRef.current.focus()
-                      formRef.current.scrollIntoView({ behavior: 'smooth' })
-                    }, 100)
+                      tenCongViecRef.current?.focus();
+                      formRef.current?.scrollIntoView({ behavior: 'smooth' });
+                    }, 100);
                   }}
                   className="bg-yellow-400 text-white p-1 rounded"
                 >
                   <PencilIcon className="w-4 h-4" />
                 </button>
                 <button
-                  onClick={() => handleDeleteTask(task.id)}
+                  onClick={() => handleDeleteTask(task._id)}
                   className="bg-red-500 text-white p-1 rounded"
                 >
                   <TrashIcon className="w-4 h-4" />
@@ -347,7 +337,7 @@ const CongViec = () => {
 
       <div className="h-20" />
     </div>
-  )
-}
+  );
+};
 
-export default CongViec
+export default CongViec;

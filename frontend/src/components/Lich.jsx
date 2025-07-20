@@ -91,7 +91,7 @@ const Lich = () => {
   };
 
   return (
-    <div className="p-4">
+    <div className="p-6">
       <div className="flex justify-between items-center mb-4">
         <button onClick={handlePrevMonth} className="px-2 py-1 bg-gray-200 rounded">←</button>
         <div className="text-xl font-bold">{months[currentMonth]} - {currentYear}</div>

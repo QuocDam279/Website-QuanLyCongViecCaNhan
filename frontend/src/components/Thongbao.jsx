@@ -60,7 +60,7 @@ const Thongbao = () => {
   }, []);
 
   return (
-    <div className="h-full p-4 bg-yellow-50/90 border border-yellow-200 rounded-xl shadow relative flex flex-col">
+    <div className="h-full p-6 bg-yellow-50/90 border border-yellow-200 rounded-xl shadow relative flex flex-col">
       <h2 className="text-2xl font-bold mb-4 text-yellow-700 flex items-center gap-2">
         Thông báo công việc
       </h2>

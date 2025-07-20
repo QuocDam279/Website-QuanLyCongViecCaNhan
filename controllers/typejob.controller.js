@@ -1,9 +1,20 @@
 const Typejob = require('../models/typejob');
+const mongoose = require('mongoose');
 
-// Thêm mới
 exports.createTypejob = async (req, res) => {
+  const { name, description } = req.body;
+
+  if (!req.user || !req.user._id) {
+    return res.status(401).json({ message: 'Không xác định được người dùng' });
+  }
+
   try {
-    const newTypejob = new Typejob({ name: req.body.name });
+    const newTypejob = new Typejob({
+      name,
+      description,
+      userId: req.user._id
+    });
+
     const saved = await newTypejob.save();
     res.status(201).json({ message: 'Thêm typejob thành công', data: saved });
   } catch (error) {
@@ -11,41 +22,45 @@ exports.createTypejob = async (req, res) => {
   }
 };
 
-// Lấy danh sách
+
 exports.getTypejob = async (req, res) => {
   try {
-    const list = await Typejob.find();
+    const list = await Typejob.find({ userId: req.user._id });
     res.json({ message: 'Danh sách typejob', data: list });
   } catch (error) {
     res.status(500).json({ message: 'Lỗi khi lấy danh sách', error });
   }
 };
 
-// Sửa
 exports.updateTypejob = async (req, res) => {
-  const id = parseInt(req.params.id, 10);
+  const id = req.params.id;
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ message: 'ID không hợp lệ' });
+  }
+
   try {
-    const updated = await Typejob.findByIdAndUpdate(id, { name: req.body.name }, { new: true });
+    const updated = await Typejob.findOneAndUpdate(
+      { _id: id, userId: req.user._id },
+      { name: req.body.name },
+      { new: true }
+    );
     if (!updated) {
       return res.status(404).json({ message: 'Không tìm thấy typejob' });
     }
     res.json({ message: 'Cập nhật thành công', data: updated });
   } catch (error) {
-    console.error('Lỗi khi cập nhật typejob:', error); // 👈 Thêm dòng này
     res.status(500).json({ message: 'Lỗi khi cập nhật typejob', error });
   }
 };
 
-
-// Xóa
 exports.deleteTypejob = async (req, res) => {
-  const id = parseInt(req.params.id, 10);
-  if (isNaN(id)) {
+  const id = req.params.id;
+  if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(400).json({ message: 'ID không hợp lệ' });
   }
 
   try {
-    const deleted = await Typejob.findByIdAndDelete(id);
+    const deleted = await Typejob.findOneAndDelete({ _id: id, userId: req.user._id });
     if (!deleted) {
       return res.status(404).json({ message: 'Không tìm thấy typejob để xóa' });
     }

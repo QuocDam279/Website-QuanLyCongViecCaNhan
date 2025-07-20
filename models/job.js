@@ -10,13 +10,13 @@ const jobSchema = new mongoose.Schema({
     enum: ['todo', 'in_progress', 'done'],
     default: 'todo'
   },
-  typejob: { type: Number, ref: 'Typejob', required: true }, 
+  typejob: { type: Number, ref: 'Typejob', required: true },
+  userId: { type: Number, required: true, ref: 'User' }, // 👈 Thêm dòng này
   due_date: { type: Date },
   file: { type: String },
   created_at: { type: Date, default: Date.now }
 });
 
-// ID tự tăng trước khi lưu
 let tempCounter = null;
 
 jobSchema.pre('save', async function (next) {

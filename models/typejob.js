@@ -2,46 +2,27 @@ const mongoose = require('mongoose');
 const Counter = require('./counter');
 
 const TypejobSchema = new mongoose.Schema({
-  _id: Number, // ID tự động tăng
-  name: { type: String, maxlength: 50, required: true, unique: true }
+  id: { type: Number, unique: true }, 
+  name: { type: String, required: true },
+  description: { type: String },
+ userId: { type: Number, required: true }
 });
 
-let tempCounter = null; // Lưu ID vừa cấp để rollback nếu lỗi
 
-// Tự động tăng ID trước khi lưu
 TypejobSchema.pre('save', async function (next) {
-  if (this.isNew && (this._id === undefined || this._id === null)) {
+  if (this.isNew) {
     try {
       const counter = await Counter.findByIdAndUpdate(
         { _id: 'typejob' },
         { $inc: { seq: 1 } },
         { new: true, upsert: true }
       );
-      this._id = counter.seq;
-      tempCounter = counter.seq;
+      this.id = counter.seq;
     } catch (err) {
       return next(err);
     }
   }
   next();
-});
-
-// Reset biến rollback nếu lưu thành công
-TypejobSchema.post('save', function (doc, next) {
-  tempCounter = null;
-  next();
-});
-
-// Nếu lỗi, rollback lại ID
-TypejobSchema.post('error', async function (error, doc, next) {
-  if (tempCounter !== null) {
-    await Counter.findByIdAndUpdate(
-      { _id: 'typejob' },
-      { $inc: { seq: -1 } }
-    );
-    tempCounter = null;
-  }
-  next(error);
 });
 
 module.exports = mongoose.model('Typejob', TypejobSchema);

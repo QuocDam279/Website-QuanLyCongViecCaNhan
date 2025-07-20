@@ -11,7 +11,7 @@ const jobSchema = new mongoose.Schema({
     default: 'todo'
   },
   typejob: { type: Number, ref: 'Typejob', required: true },
-  userId: { type: Number, required: true, ref: 'User' }, // 👈 Thêm dòng này
+  userId: { type: Number, required: true, ref: 'User' },
   due_date: { type: Date },
   file: { type: String },
   created_at: { type: Date, default: Date.now }
@@ -50,3 +50,49 @@ jobSchema.post('error', async function (error, doc, next) {
 });
 
 module.exports = mongoose.model('Job', jobSchema);
+
+
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Job:
+ *       type: object
+ *       required:
+ *         - title
+ *         - typejob
+ *         - userId
+ *       properties:
+ *         _id:
+ *           type: integer
+ *           example: 1
+ *         title:
+ *           type: string
+ *           maxLength: 50
+ *           example: "Viết báo cáo tuần"
+ *         description:
+ *           type: string
+ *           example: "Chuẩn bị báo cáo tiến độ công việc tuần 30"
+ *         status:
+ *           type: string
+ *           enum: [todo, in_progress, done]
+ *           example: "todo"
+ *         typejob:
+ *           type: integer
+ *           example: 2
+ *         userId:
+ *           type: integer
+ *           example: 5
+ *         due_date:
+ *           type: string
+ *           format: date
+ *           example: "2025-07-31"
+ *         file:
+ *           type: string
+ *           example: "uploads/bao-cao.pdf"
+ *         created_at:
+ *           type: string
+ *           format: date-time
+ *           example: "2025-07-20T08:30:00Z"
+ */

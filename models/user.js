@@ -1,17 +1,67 @@
 const mongoose = require('mongoose');
 const Counter = require('./counter');
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     User:
+ *       type: object
+ *       required:
+ *         - name
+ *         - email
+ *         - password
+ *       properties:
+ *         _id:
+ *           type: integer
+ *           description: ID tự tăng của người dùng
+ *           example: 1
+ *         name:
+ *           type: string
+ *           description: Tên người dùng
+ *           example: Nguyễn Văn A
+ *         email:
+ *           type: string
+ *           description: Email người dùng
+ *           example: nguyenvana@example.com
+ *         password:
+ *           type: string
+ *           description: Mật khẩu (hash)
+ *           example: $2a$10$abcd...
+ *         created_at:
+ *           type: string
+ *           format: date-time
+ *           description: Thời gian tạo
+ *           example: 2025-07-20T10:00:00.000Z
+ */
+
 const userSchema = new mongoose.Schema({
   _id: Number,
-  name: { type: String, maxlength: 50 },
-  email: { type: String, maxlength: 255, unique: true },
-  password: { type: String, maxlength: 255 },
-  created_at: { type: Date, default: Date.now }
+  name: {
+    type: String,
+    maxlength: 50,
+    required: true
+  },
+  email: {
+    type: String,
+    maxlength: 255,
+    unique: true,
+    required: true
+  },
+  password: {
+    type: String,
+    maxlength: 255,
+    required: true
+  },
+  created_at: {
+    type: Date,
+    default: Date.now
+  }
 });
 
-let tempCounter = null; // Biến tạm để rollback nếu lỗi
+let tempCounter = null; // Dùng để rollback nếu lưu lỗi
 
-// Tăng ID trước khi lưu
+// Tự tăng ID trước khi lưu
 userSchema.pre('save', async function (next) {
   if (this.isNew && (this._id === undefined || this._id === null)) {
     try {
@@ -29,20 +79,13 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
-// Sau khi lưu thành công, reset biến tạm
+// Reset biến rollback sau khi lưu thành công
 userSchema.post('save', function (doc, next) {
   tempCounter = null;
   next();
 });
 
-// Nếu lưu lỗi, rollback ID
-userSchema.post('save', function (error, doc, next) {
-  if (error) {
-    return next(error);
-  }
-  next();
-});
-
+// Xử lý rollback nếu lưu bị lỗi
 userSchema.post('error', async function (error, doc, next) {
   if (tempCounter !== null) {
     await Counter.findByIdAndUpdate(

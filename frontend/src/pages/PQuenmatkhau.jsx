@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import authApi from '../api/authApi'; // Giả định đã có API gửi mail
+import authApi from '../api/authApi';
 
 const PQuenmatkhau = () => {
   const [email, setEmail] = useState('');
@@ -9,7 +9,7 @@ const PQuenmatkhau = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await authApi.forgotPassword({ email });
+      await authApi.forgotPassword({ email }); // ✅ Không gán vào biến không dùng
       setMessage('Mã xác nhận đã được gửi đến email của bạn.');
       setError('');
     } catch {

@@ -135,8 +135,8 @@ const CongViec = () => {
   });
 
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold text-blue-700 mb-4">CÔNG VIỆC</h1>
+    <div className="p-8">
+      <h1 className="text-xl font-bold text-blue-700 mb-4">CÔNG VIỆC</h1>
 
       {/* Form tạo/sửa */}
       <div className="bg-white border rounded-xl p-6 shadow-lg mb-8" ref={formRef}>

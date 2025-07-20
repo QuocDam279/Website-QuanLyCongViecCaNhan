@@ -6,6 +6,7 @@ import PDangky from './pages/PDangky';
 import PCongviec from './pages/PCongviec';
 import PrivateRoute from './components/PrivateRoute';
 import PLichsu from './pages/PLichsuthaydoi';
+import PDoimatkhau from './pages/PDoimatkhau';
 
 function App() {
   return (
@@ -26,6 +27,9 @@ function App() {
       } />
       <Route path="/lichsu" element={
         <PrivateRoute><PLichsu /></PrivateRoute>
+      } />
+      <Route path="/doimatkhau" element={
+        <PrivateRoute><PDoimatkhau /></PrivateRoute>
       } />
 
     </Routes>

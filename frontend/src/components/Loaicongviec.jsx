@@ -80,7 +80,7 @@ const Loaicongviec = () => {
   };
 
   return (
-    <div className="p-4 w-full">
+    <div className="p-6 w-full">
       <div className="text-xl ml-2 mt-2 font-bold text-blue-700">
         LOẠI CÔNG VIỆC
       </div>

@@ -21,7 +21,9 @@ const Lichsu = () => {
 
   return (
     <div className="p-6">
-      <h1 className="text-xl font-bold mb-4">🕘 Lịch sử thay đổi</h1>
+      <div className="text-2xl ml-2 mb-3 font-bold text-blue-700">
+        Lịch sử thay đổi
+      </div>
       <div className="space-y-4">
         {logs.length === 0 ? (
           <p className="text-gray-500">Không có lịch sử thay đổi nào.</p>

@@ -50,7 +50,7 @@ const Tongquan = () => {
   return (
     <div className="flex flex-col h-auto">
       {/* Phần thống kê trên */}
-      <div className="p-4">
+      <div className="p-6">
         <div className="text-xl ml-2 mt-2 font-bold text-blue-700">
           TỔNG QUAN
         </div>

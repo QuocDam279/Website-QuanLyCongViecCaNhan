@@ -78,7 +78,7 @@ const Menutrai = () => {
           </button>
           {isOpen && (
             <div className="absolute w-auto mt-2 bg-white border rounded shadow-lg text-black z-10">
-              <button className="w-full text-left px-4 py-2 hover:bg-gray-100 cursor-pointer flex">
+              <button className="w-full text-left px-4 py-2 hover:bg-gray-100 cursor-pointer flex" onClick={() => navigate('/doimatkhau')}>
                 <LockClosedIcon className="w-5 h-5 mr-2" />
                 Đổi mật khẩu
               </button>

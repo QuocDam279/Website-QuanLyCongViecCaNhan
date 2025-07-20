@@ -15,10 +15,6 @@ const Ptongquan = () => {
       <div className='w-[79.5%] ml-[20%]'>
         <Tongquan />
 
-        <div className="flex-1 overflow-auto">
-          <Lich />
-        </div>
-
         <div className="flex gap-4 p-4">
           <div className="w-1/2">
             <Trangthai />
@@ -26,6 +22,10 @@ const Ptongquan = () => {
           <div className="w-1/2">
             <Thongbao />
           </div>
+          
+        </div>
+        <div className="flex-1 overflow-auto">
+          <Lich />
         </div>
 
         <div className="h-15" />

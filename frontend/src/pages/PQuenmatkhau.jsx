@@ -12,7 +12,7 @@ const PQuenmatkhau = () => {
       const res = await authApi.forgotPassword({ email });
       setMessage('Mã xác nhận đã được gửi đến email của bạn.');
       setError('');
-    } catch (err) {
+    } catch {
       setError('Không thể gửi mã xác nhận. Vui lòng kiểm tra lại email.');
       setMessage('');
     }

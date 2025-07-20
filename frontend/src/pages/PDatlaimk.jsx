@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import authApi from '../api/authApi';
 import { useSearchParams } from 'react-router-dom';
 
@@ -22,7 +22,7 @@ const PDatlaimk = () => {
       await authApi.resetPassword({ token, password: newPassword }); // 👈 Gửi token và password
       setMessage('Mật khẩu đã được đặt lại thành công.');
       setError('');
-    } catch (err) {
+    } catch {
       setError('Token không hợp lệ hoặc đã hết hạn.');
       setMessage('');
     }

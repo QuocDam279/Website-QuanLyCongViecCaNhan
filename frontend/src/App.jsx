@@ -7,6 +7,8 @@ import PCongviec from './pages/PCongviec';
 import PrivateRoute from './components/PrivateRoute';
 import PLichsu from './pages/PLichsuthaydoi';
 import PDoimatkhau from './pages/PDoimatkhau';
+import PQuenmatkhau from './pages/PQuenmatkhau';
+import PDatlaimk from './pages/PDatlaimk';
 
 function App() {
   return (
@@ -14,6 +16,8 @@ function App() {
       {/* Public routes */}
       <Route path="/" element={<PDangnhap />} />
       <Route path="/dangky" element={<PDangky />} />
+      <Route path="/quenmatkhau" element={<PQuenmatkhau />} />
+      <Route path="/datlaimatkhau" element={<PDatlaimk />} />
 
       {/* Private routes */}
       <Route path="/tongquan" element={

@@ -1,35 +1,22 @@
-// backend/controllers/auth.controller.js
 const User = require('../models/user');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const nodemailer = require('nodemailer');
 
+// ========== ĐĂNG KÝ ==========
 exports.register = async (req, res) => {
   try {
     const { name, email, password } = req.body;
-
-    // Kiểm tra email đã tồn tại chưa
     const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.status(400).json({ message: 'Email đã tồn tại' });
-    }
+    if (existingUser) return res.status(400).json({ message: 'Email đã tồn tại' });
 
-    // Mã hóa mật khẩu
     const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Tạo user mới
     const user = new User({ name, email, password: hashedPassword });
     await user.save();
 
-    // Tạo token JWT, thời hạn 1 ngày
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
-
-    // Trả về thông tin user và token
     res.json({
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-      },
+      user: { id: user._id, name: user.name, email: user.email },
       token,
       message: 'User registered successfully',
     });
@@ -39,32 +26,19 @@ exports.register = async (req, res) => {
   }
 };
 
+// ========== ĐĂNG NHẬP ==========
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
-
-    // Tìm user theo email
     const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(400).json({ message: 'Invalid credentials' });
-    }
+    if (!user) return res.status(400).json({ message: 'Invalid credentials' });
 
-    // So sánh mật khẩu
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.status(400).json({ message: 'Invalid credentials' });
-    }
+    if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });
 
-    // Tạo token JWT
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
-
-    // Trả về token và thông tin user (nếu muốn frontend hiển thị tên luôn khi đăng nhập)
     res.json({
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-      },
+      user: { id: user._id, name: user.name, email: user.email },
       token,
       message: 'Login successful',
     });
@@ -74,23 +48,16 @@ exports.login = async (req, res) => {
   }
 };
 
+// ========== ĐỔI MẬT KHẨU ==========
 exports.changePassword = async (req, res) => {
   try {
     const { oldPassword, newPassword } = req.body;
-
-    // Tìm user theo ID từ token (middleware đã gán req.user)
     const user = await User.findById(req.user.id);
-    if (!user) {
-      return res.status(404).json({ message: 'Người dùng không tồn tại' });
-    }
+    if (!user) return res.status(404).json({ message: 'Người dùng không tồn tại' });
 
-    // Kiểm tra mật khẩu cũ
     const isMatch = await bcrypt.compare(oldPassword, user.password);
-    if (!isMatch) {
-      return res.status(400).json({ message: 'Mật khẩu cũ không đúng' });
-    }
+    if (!isMatch) return res.status(400).json({ message: 'Mật khẩu cũ không đúng' });
 
-    // Hash mật khẩu mới và cập nhật
     const hashedNewPassword = await bcrypt.hash(newPassword, 10);
     user.password = hashedNewPassword;
     await user.save();
@@ -99,5 +66,60 @@ exports.changePassword = async (req, res) => {
   } catch (error) {
     console.error('Lỗi đổi mật khẩu:', error);
     res.status(500).json({ message: 'Lỗi máy chủ' });
+  }
+};
+
+// ========== QUÊN MẬT KHẨU ==========
+exports.forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) return res.status(404).json({ message: 'Email không tồn tại' });
+
+    const resetToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '15m' });
+
+    const transporter = nodemailer.createTransport({
+      service: 'Gmail',
+      auth: {
+        user: process.env.MAIL_USERNAME,
+        pass: process.env.MAIL_PASSWORD,
+      },
+    });
+
+    const resetLink = `${process.env.CLIENT_URL}/datlaimatkhau?token=${resetToken}`;
+
+    await transporter.sendMail({
+      from: `"Quản lý công việc" <${process.env.MAIL_USERNAME}>`,
+      to: email,
+      subject: 'Đặt lại mật khẩu',
+      html: `<p>Bạn đã yêu cầu đặt lại mật khẩu.</p>
+             <p>Nhấn vào link bên dưới để đặt lại mật khẩu (hết hạn sau 15 phút):</p>
+             <a href="${resetLink}">${resetLink}</a>`,
+    });
+
+    res.json({ message: 'Đã gửi email đặt lại mật khẩu' });
+  } catch (error) {
+    console.error('Lỗi gửi email:', error);
+    res.status(500).json({ message: 'Không thể gửi email' });
+  }
+};
+
+// ========== ĐẶT LẠI MẬT KHẨU ==========
+exports.resetPassword = async (req, res) => {
+  try {
+    const { token, password } = req.body;
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    const user = await User.findById(decoded.id);
+    if (!user) return res.status(404).json({ message: 'Người dùng không tồn tại' });
+
+    const hashedNewPassword = await bcrypt.hash(password, 10);
+    user.password = hashedNewPassword;
+    await user.save();
+
+    res.json({ message: 'Đặt lại mật khẩu thành công' });
+  } catch (error) {
+    console.error('Lỗi đặt lại mật khẩu:', error);
+    res.status(400).json({ message: 'Token không hợp lệ hoặc đã hết hạn' });
   }
 };

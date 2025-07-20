@@ -85,7 +85,12 @@ const PDangnhap = () => {
           >
             Tạo tài khoản
           </button>
-          <a href="#" className="text-sm text-black">Quên mật khẩu?</a>
+          <button
+            onClick={() => navigate('/quenmatkhau')}
+            className="text-sm text-blue-600 hover:underline"
+          >
+            Quên mật khẩu?
+          </button>
         </div>
 
       </div>

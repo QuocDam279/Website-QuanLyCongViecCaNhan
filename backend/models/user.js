@@ -1,5 +1,3 @@
-//backend/model/user.js
-
 const mongoose = require('mongoose');
 const Counter = require('./counter');
 
@@ -11,9 +9,8 @@ const userSchema = new mongoose.Schema({
   created_at: { type: Date, default: Date.now }
 });
 
-let tempCounter = null; // Biến tạm để rollback nếu lỗi
+let tempCounter = null;
 
-// Tăng ID trước khi lưu
 userSchema.pre('save', async function (next) {
   if (this.isNew && (this._id === undefined || this._id === null)) {
     try {
@@ -31,13 +28,11 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
-// Sau khi lưu thành công, reset biến tạm
 userSchema.post('save', function (doc, next) {
   tempCounter = null;
   next();
 });
 
-// Nếu lưu lỗi, rollback ID
 userSchema.post('save', function (error, doc, next) {
   if (error) {
     return next(error);

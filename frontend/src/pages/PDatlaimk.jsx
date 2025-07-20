@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import authApi from '../api/authApi';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
+
+
 
 const PDatlaimk = () => {
   const [searchParams] = useSearchParams();
@@ -8,6 +10,8 @@ const PDatlaimk = () => {
   const [confirm, setConfirm] = useState('');
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
+  
+  const navigate = useNavigate();
 
   const token = searchParams.get('token'); // 👈 Lấy token từ URL
 

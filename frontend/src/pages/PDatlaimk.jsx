@@ -22,6 +22,10 @@ const PDatlaimk = () => {
       await authApi.resetPassword({ token, password: newPassword }); // 👈 Gửi token và password
       setMessage('Mật khẩu đã được đặt lại thành công.');
       setError('');
+
+      setTimeout(() => {
+        navigate('/');
+      }, 2000);   
     } catch {
       setError('Token không hợp lệ hoặc đã hết hạn.');
       setMessage('');

@@ -1,5 +1,3 @@
-//backend/app.js
-
 const express = require('express');
 const dotenv = require('dotenv');
 const connectDB = require('./config/db');
@@ -14,10 +12,10 @@ connectDB();
 
 const cors = require('cors');
 
-// Cho phép frontend 5173 gọi được
+// Cho phép frontend từ http://localhost (Nginx) và http://localhost:5173 (dev)
 app.use(cors({
-  origin: 'http://localhost:5173',
-  credentials: true
+  origin: ['http://localhost', 'http://localhost:5173'],
+  credentials: true,
 }));
 
 app.use(express.urlencoded({ extended: true }));

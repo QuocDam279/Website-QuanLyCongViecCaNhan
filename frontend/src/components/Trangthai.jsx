@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { PieChart, Pie, Cell } from "recharts";
 import jobApi from "../api/jobApi";
+// eslint-disable-next-line no-unused-vars
 import {
   DocumentIcon,
   ArrowPathIcon,

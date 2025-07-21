@@ -13,7 +13,7 @@ const PQuenmatkhau = () => {
       // await authApi.forgotPassword(email);
       setMessage('Đã gửi mã xác nhận tới email của bạn!');
       setError('');
-    } catch (err) {
+    } catch {
       setError('Có lỗi xảy ra khi gửi email!');
       setMessage('');
     }

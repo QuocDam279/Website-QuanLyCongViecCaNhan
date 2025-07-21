@@ -114,7 +114,7 @@ const Trangthai = () => {
           { icon: MinusCircleIcon, text: 'Chưa thực hiện', value: toDo, color: 'text-orange-600' },
           { icon: ArrowPathIcon, text: 'Đang thực hiện', value: inProgress, color: 'text-blue-600' },
           { icon: CheckCircleIcon, text: 'Đã hoàn thành', value: done, color: 'text-pink-600' },
-        ].map(({ icon: Icon, text, value, color }, i) => (
+        ].map(({ icon: text, value, color }, i) => (
           <div
             key={i}
             className={`flex items-center gap-2 cursor-pointer max-w-fit hover:opacity-80 ${color}`}

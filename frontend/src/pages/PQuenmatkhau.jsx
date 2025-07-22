@@ -65,7 +65,7 @@ const PQuenmatkhau = () => {
         {/* Điều hướng */}
         <div className="text-center mt-6 text-sm text-gray-600">
           <span>Bạn nhớ mật khẩu? </span>
-          <a href="/login" className="text-blue-600 hover:underline">
+          <a href="/" className="text-blue-600 hover:underline">
             Đăng nhập
           </a>
         </div>

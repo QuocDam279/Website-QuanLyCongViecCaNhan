@@ -68,10 +68,7 @@ cd frontend
 npm install
 npm run dev
 ```
-🐳 Chạy bằng Docker
-bash
-Copy
-Edit
+🐳 Chạy bằng Docker: 
 docker-compose up --build
 
 👨‍💻 Thành Viên Thực Hiện

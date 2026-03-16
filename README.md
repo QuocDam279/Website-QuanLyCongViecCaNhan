@@ -51,7 +51,7 @@
 ### 👉 Yêu cầu:
 
 - Node.js
-- Docker (nếu dùng Docker)
+- Docker
 - Kết nối Mongo Atlas
 
 ### 📦 Cài đặt thủ công
